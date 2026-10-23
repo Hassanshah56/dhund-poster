@@ -1,0 +1,59 @@
+/* Dhund Poster - sirf design (rang, size, layout) yahan hai */
+:root{--bg:#0e0c0c;--p:#181414;--p2:#231d1d;--b:#352c2b;--a:#e11d2e;--a2:#ff3b4d;--y:#ffc72c;--t:#f3eeee;--m:#a99f9e}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:radial-gradient(1000px 500px at 85% -10%,#2f1215,transparent),var(--bg);color:var(--t)}
+.top{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--b);background:#120f0f}
+.top i{width:8px;height:24px;border-radius:3px;background:linear-gradient(var(--a),var(--y))}
+.top b{font-size:18px}
+.top small{color:var(--m);margin-left:auto}
+main{display:grid;grid-template-columns:minmax(340px,460px) 1fr;gap:18px;padding:16px;max-width:1400px;margin:auto;align-items:start}
+#ctl{order:1;min-width:0}
+#pv{order:2;position:sticky;top:12px;min-width:0}
+#stage{display:grid;place-items:center;background:#0a0909;border:1px solid var(--b);border-radius:16px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+canvas{max-width:100%;max-height:calc(100dvh - 150px);width:auto;height:auto;border-radius:8px;background:#222}
+#bar{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+#bar span{flex:1;text-align:center;color:var(--m);font-size:12px;min-width:80px}
+#bar button{margin:0}
+details{background:var(--p);border:1px solid var(--b);border-radius:14px;margin:10px 0;padding:0 14px 14px;transition:border-color .2s}details:hover{border-color:#4d403e}
+summary{font-weight:700;cursor:pointer;padding:13px 14px;margin:0 -14px;list-style:none;display:flex;justify-content:space-between;border-radius:14px;transition:color .2s}summary:hover{color:var(--y)}
+summary::-webkit-details-marker{display:none}summary:after{content:"+";color:var(--y);font-size:18px}details[open] summary:after{content:"\2212"}
+label{display:block;margin:10px 0 3px;font-size:12px;color:var(--m)}
+input,select,textarea{width:100%;background:var(--p2);color:var(--t);border:1px solid var(--b);border-radius:10px;padding:9px;font:inherit;transition:border-color .15s,background .15s}
+input:hover,select:hover,textarea:hover{border-color:#5a4a48}input:focus,select:focus,textarea:focus{outline:2px solid var(--y);outline-offset:1px}
+input[type=color]{padding:2px;height:38px;cursor:pointer}input[type=range]{padding:0;accent-color:var(--a);cursor:pointer}input[type=checkbox]{width:auto;margin-right:6px}
+button{font:inherit;font-weight:600;color:#fff;border:1px solid transparent;border-radius:10px;padding:9px 16px;margin:6px 6px 0 0;cursor:pointer;background:linear-gradient(180deg,var(--a2),var(--a));box-shadow:0 2px 8px rgba(225,29,46,.25);transition:transform .15s,box-shadow .15s,background .15s,border-color .15s,filter .15s,color .15s}
+button:hover{transform:translateY(-1px);filter:brightness(1.1);box-shadow:0 6px 16px rgba(225,29,46,.4)}
+button:active{transform:scale(.97)}button:focus-visible{outline:2px solid var(--y);outline-offset:2px}button:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+button.g{background:var(--p2);border-color:var(--b);box-shadow:none;color:var(--t)}button.g:hover{border-color:var(--y);color:var(--y);background:#2c2424;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+button.y{background:linear-gradient(180deg,#ffd75e,var(--y));color:#1a1200;box-shadow:0 2px 8px rgba(255,199,44,.25)}button.y:hover{box-shadow:0 6px 16px rgba(255,199,44,.45)}
+button.sm{padding:6px 12px;font-size:12px;margin:0}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
+#st{display:inline-block;white-space:pre-wrap;word-break:break-word;font-size:12px;color:var(--y);margin-top:6px}
+#pgw{height:6px;background:var(--p2);border-radius:9px;overflow:hidden;margin-top:10px}
+#pg{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--y));transition:width .2s}
+#tabs{display:flex;gap:4px;background:var(--p2);padding:4px;border-radius:12px;margin:6px 0}
+.tab{flex:1;margin:0;background:transparent;box-shadow:none;color:var(--m);padding:7px}
+.tab:hover{color:var(--t);background:#2f2727;box-shadow:none;transform:none}
+.tab.on,.tab.on:hover{background:var(--a);color:#fff}
+#chs{display:flex;flex-wrap:wrap;gap:6px;max-height:190px;overflow:auto;margin:8px 0;padding:2px}
+.ch{background:var(--p2);border:1px solid var(--b);color:var(--t);border-radius:999px;padding:5px 12px;margin:0;font-size:12px;font-weight:500;box-shadow:none}
+.ch:hover{border-color:var(--y);color:var(--y);background:#2c2424;box-shadow:none}
+.ch.on,.ch.on:hover{background:var(--a);border-color:var(--a);color:#fff}
+.card{display:flex;gap:10px;background:var(--p2);border:1px solid var(--b);border-radius:12px;padding:10px;margin:10px 0;transition:border-color .2s,transform .2s,box-shadow .2s}
+.card:hover{border-color:#6a5855;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.card.on{border-color:var(--y);box-shadow:0 0 0 1px var(--y)}
+.card img{width:90px;height:90px;object-fit:cover;border-radius:8px;cursor:pointer;background:#333;flex:none;transition:filter .2s}
+.card img:hover{filter:brightness(1.15)}
+.card>div{flex:1;min-width:0}
+.card textarea{margin-bottom:6px;background:var(--p)}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap}
+@media(max-width:900px){main{display:block;padding:10px}
+#pv{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0}canvas{max-height:38dvh}
+#stage{padding:6px}
+.top small{display:none}}
+@media(max-width:520px){.card{flex-direction:column}
+.card img{width:100%;height:160px}
+.row{flex-wrap:wrap}
+.row>*{flex:1 1 90px}}
+.ch.ok{border-color:#2ecc71;color:#2ecc71}
+.ch.bad{opacity:.45;border-style:dashed;text-decoration:line-through}
