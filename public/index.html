@@ -17,7 +17,8 @@
 <label>Ya XML yahan paste karein (link ho to khali chhorein)</label><textarea id="xml" dir="auto" rows="3"></textarea>
 <label>Kitne poster</label><input id="cnt" type="number" value="10" min="1" max="30">
 <button id="load">Khabrein lao</button><button id="chk" class="g">Sab feeds check karo</button> <span id="st"></span>
-<div><button id="zip" class="g">Images + text ZIP</button><button id="cpall" class="g">Sab text copy</button></div><div id="pgw" hidden><div id="pg"></div></div>
+<div><button id="zip" class="g">Images + text ZIP</button><button id="cpall" class="g">Sab text copy</button></div>
+<div class="tr"><span>Sab khabrein translate (headline + text)</span><button class="g sm" data-all="ru" data-m="ru">Roman Urdu</button><button class="g sm" data-all="ur" data-m="ur">اردو</button><button class="g sm" data-all="en" data-m="en">English</button><button class="g sm" data-all="undo" data-m="undo">↺ Asal</button></div><div id="pgw" hidden><div id="pg"></div></div>
 <div id="list"></div></details>
 <details><summary>02 Photo, template, logo</summary>
 <label>Background photo (RSS na ho to)</label><input id="bgf" type="file" accept="image/*"><button id="rbg" class="g">Photo hatao</button>
@@ -25,6 +26,7 @@
 <label>Template opacity</label><input id="tplo" type="range" min="0" max="100" value="100">
 <label>Photo size</label><input id="ps" type="range" min="30" max="300" value="100">
 <div class="row"><div><label>Photo horizontal</label><input id="px" type="range" min="-100" max="100" value="0"></div><div><label>Photo vertical</label><input id="py" type="range" min="-100" max="100" value="0"></div></div>
+<div class="tr"><span class="adjwho"></span><button class="g sm adj-all" data-m="ur">Sab posters par lagao</button><button class="g sm adj-reset" data-m="undo">↺ Reset</button></div>
 <label><input id="shade" type="checkbox" checked> Neeche dark shade (text saaf parhne ke liye)</label>
 <label><input id="lon" type="checkbox" checked> Logo dikhao</label>
 <label>Apna logo (default: assets/dhund-logo.png)</label><input id="logof" type="file" accept="image/*">
@@ -35,12 +37,15 @@
 <label>Logo position</label><select id="lpos"><option value="0,0">Top left<option value="1,0">Top center<option value="2,0">Top right<option value="0,1">Middle left<option value="1,1">Center<option value="2,1">Middle right<option value="0,2">Bottom left<option value="1,2">Bottom center<option value="2,2">Bottom right</select></details>
 <details><summary>03 Headline aur text</summary>
 <label>Headline (words ko *star* ke beech likhein to highlight hon)</label><textarea id="hl" dir="auto" rows="3">Yahan apni *headline* likhein</textarea>
+<div class="tr"><span>Headline translate</span><button class="g sm" data-tr="ru" data-m="ru">Roman Urdu</button><button class="g sm" data-tr="ur" data-m="ur">اردو</button><button class="g sm" data-tr="en" data-m="en">English</button><button class="g sm" data-tr="undo" data-m="undo">↺ Asal</button><em id="tst"></em></div>
 <label>Handle / website</label><input id="hdl" placeholder="@dhundnews">
 <label><input id="hle" type="checkbox" checked> Highlight chalao</label>
 <div class="row"><div><label>Text</label><input id="c1" type="color" value="#ffffff"></div><div><label>Highlight bg</label><input id="c2" type="color" value="#ffc72c"></div><div><label>Highlight text</label><input id="c3" type="color" value="#000000"></div></div>
 <div class="row"><div><label>Alignment</label><select id="al"><option value="center">Center<option value="left">Left<option value="right">Right</select></div><div><label>Position</label><select id="pos"><option value="bottom">Bottom<option value="middle">Middle<option value="top">Top</select></div></div>
 <label>Text size</label><input id="fs" type="range" min="30" max="160" value="76">
+<label><input id="fit" type="checkbox" checked> Text khud chhota ho jaye taake poora poster mein aaye</label>
 <label>Font</label><select id="ff"><option value="auto">Auto (Urdu = Nastaliq, baaqi = Poppins)<option value='"Noto Nastaliq Urdu"'>Noto Nastaliq Urdu<option value='"Noto Naskh Arabic"'>Noto Naskh<option>Poppins<option>Montserrat<option>Roboto<option>Oswald<option>Anton<option>Arial<option>Impact<option>Tahoma<option>Georgia</select>
+<div class="tr"><span class="adjwho"></span><button class="g sm adj-all" data-m="ur">Sab posters par lagao</button><button class="g sm adj-reset" data-m="undo">↺ Reset</button></div>
 <label>Apna font (.ttf .otf .woff .woff2)</label><input id="fontf" type="file" accept=".ttf,.otf,.woff,.woff2"></details>
 <details><summary>04 Poster size</summary><label>Export quality</label><select id="xq"><option value="1">Standard (1x)<option value="2">High (2x, zyada saaf)</select><label>Poster size</label><select id="sz"><option value="1080x1350">Instagram 4:5<option value="1080x1080">Square 1:1<option value="1080x1920">Story / Reel 9:16<option value="1200x630">Facebook 1200x630<option value="1280x720">YouTube 16:9<option value="tpl">Template ke size ka<option value="c">Custom</option></select>
 <div class="row" id="cs" hidden><input id="cw" type="number" value="1080"><input id="ch" type="number" value="1350"></div></details>
@@ -49,4 +54,5 @@
 <!-- feeds.js = channels ki list (yahan XML links add/hatao) | app.js = poster ka code -->
 <script src="feeds.js"></script>
 <script src="app.js"></script>
+<script src="translate.js"></script>
 </body></html>

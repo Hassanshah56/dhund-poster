@@ -188,15 +188,6 @@ function parse(xml) {
       const u = firstImgInHtml(textOf(e, tag));
       if (u) found.push(u);
     }
-    // Kuch feeds (jaise Express) image seedha XML tag mein deti hain: <image><img src="..."/></image>
-    for (const im of e.getElementsByTagName('img')) {
-      const u = im.getAttribute('src') || im.getAttribute('data-src');
-      if (u) found.push(u);
-    }
-    for (const im of e.getElementsByTagName('image')) {
-      const u = (im.getAttribute('url') || textOf(im, 'url') || (im.children.length ? '' : im.textContent) || '').trim();
-      if (/^(https?:)?\/\//.test(u)) found.push(u);
-    }
     let img = found.find(u => !/thumb|[-_]\d{2,3}x\d{2,3}\.|small|icon|avatar/i.test(u)) || found[0] || '';
     if (img) {
       try { img = new URL(img.startsWith('//') ? 'https:' + img : img, link || undefined).href; } catch {}
@@ -249,7 +240,13 @@ function drawSmooth(x, img, dx, dy, w, h) {
   x.drawImage(src, dx, dy, w, h);
 }
 
-async function draw(c, headline, photo, scale = 1) {
+// Har poster ki apni setting: photo (ps=size, px=left/right, py=up/down) aur text (fs=size, pos, al)
+const ADJ_KEYS = ['ps', 'px', 'py', 'fs', 'pos', 'al'];
+const ADJ_DEFAULT = { ps: 100, px: 0, py: 0, fs: 76, pos: 'bottom', al: 'center' };
+const curAdj = () => Object.fromEntries(ADJ_KEYS.map(k => [k, k === 'pos' || k === 'al' ? $(k).value : +$(k).value]));
+
+async function draw(c, headline, photo, scale = 1, adj) {
+  const A = adj || curAdj();
   let [W, H] = posterSize();
   W = Math.round(W * scale);
   H = Math.round(H * scale);
@@ -265,9 +262,9 @@ async function draw(c, headline, photo, scale = 1) {
   // (b) photo
   const img = photo || bg;
   if (img) {
-    const s = Math.max(W / img.width, H / img.height) * $('ps').value / 100;
+    const s = Math.max(W / img.width, H / img.height) * A.ps / 100;
     const w = img.width * s, h = img.height * s;
-    drawSmooth(x, img, (W - w) / 2 + $('px').value * W / 100, (H - h) / 2 + $('py').value * H / 100, w, h);
+    drawSmooth(x, img, (W - w) / 2 + A.px * W / 100, (H - h) / 2 + A.py * H / 100, w, h);
   }
 
   // (c) template / frame
@@ -302,32 +299,39 @@ async function draw(c, headline, photo, scale = 1) {
   const rtl = /[\u0600-\u06FF]/.test(headline);                       // Urdu / Arabic?
   const pick = $('ff').value;
   const fam = pick === 'auto' ? (rtl ? '"Noto Nastaliq Urdu"' : 'Poppins') : pick;
-  const fs = $('fs').value * W / 1080;
-  const font = `700 ${fs}px ${fam},sans-serif`;
-  try { await document.fonts.load(font, headline || 'a'); } catch {}
-  x.font = font;
+  let fs = A.fs * W / 1080;
+  try { await document.fonts.load(`700 ${fs}px ${fam},sans-serif`, headline || 'a'); } catch {}
   x.textBaseline = 'middle';
   x.textAlign = 'left';
+  const hlOn = $('hle').checked, lhK = rtl ? 1.9 : 1.35;
 
-  // lafz alag karo; *star* ke andar wale highlight honge
-  const space = x.measureText(' ').width, hlOn = $('hle').checked, words = [];
-  let inHl = false;
-  for (const t of headline.split(/(\*|\s+)/)) {
-    if (t === '*') inHl = !inHl;
-    else if (t && t.trim()) words.push({ t, h: inHl && hlOn, w: x.measureText(t).width });
+  // text ko lafz lafz karke lines mein todna (*star* ke andar wale highlight honge)
+  const layout = () => {
+    x.font = `700 ${fs}px ${fam},sans-serif`;
+    const space = x.measureText(' ').width, words = [];
+    let inHl = false;
+    for (const t of headline.split(/(\*|\s+)/)) {
+      if (t === '*') inHl = !inHl;
+      else if (t && t.trim()) words.push({ t, h: inHl && hlOn, w: x.measureText(t).width });
+    }
+    const lines = [[]];
+    let lineW = 0;
+    for (const d of words) {
+      if (lineW + d.w > W * .86 && lines.at(-1).length) { lines.push([]); lineW = 0; }
+      lines.at(-1).push(d);
+      lineW += d.w + space;
+    }
+    return { space, lines };
+  };
+  let L = layout();
+  // lamba text (khaas kar Roman Urdu) poster se bahar na jaye: font khud chhota karo
+  if ($('fit').checked) {
+    const maxH = H * .6, minFs = W * .028;
+    while (L.lines.length * fs * lhK > maxH && fs > minFs) { fs *= .93; L = layout(); }
   }
-
-  // lines mein todo
-  const lines = [[]];
-  let lineW = 0;
-  for (const d of words) {
-    if (lineW + d.w > W * .86 && lines.at(-1).length) { lines.push([]); lineW = 0; }
-    lines.at(-1).push(d);
-    lineW += d.w + space;
-  }
-
-  const lh = fs * (rtl ? 1.9 : 1.35);
-  const handle = $('hdl').value.trim(), pos = $('pos').value, align = $('al').value;
+  const { space, lines } = L;
+  const lh = fs * lhK;
+  const handle = $('hdl').value.trim(), pos = A.pos, align = A.al;
   let y = pos === 'top' ? H * .12
         : pos === 'middle' ? (H - lines.length * lh) / 2
         : H - lines.length * lh - H * (handle ? .14 : .08);
@@ -380,7 +384,7 @@ async function preview() {
   do {
     redrawAgain = false;
     const it = items[selected];
-    await draw(canvas, it ? it.headline : $('hl').value, it && it.im ? await it.im : null);
+    await draw(canvas, it ? it.headline : $('hl').value, it && it.im ? await it.im : null, 1, it ? it.adj : undefined);
   } while (redrawAgain);
   drawing = false;
   $('dim').textContent = canvas.width + ' x ' + canvas.height;
@@ -424,15 +428,23 @@ function buildList() {
     acts.append(smallBtn('Dekho', () => pickItem(i)),
                 smallBtn('PNG', () => downloadOne(i)),
                 smallBtn('Text copy', () => copyText(text.value)));
-    right.append(head, text, acts);
+    right.append(head, text, acts, trButtons(i));   // trButtons = translate.js
     card.append(thumb, right);
     list.append(card);
     it.headEl = head;
+    it.textEl = text;
   });
 }
 
+const adjTo = o => ADJ_KEYS.forEach(k => $(k).value = o[k]);
+function showWho() {
+  const t = selected >= 0 ? 'Abhi: Poster ' + (selected + 1) + ' ki setting (sirf isi par asar)' : 'Abhi koi khabar select nahi (general setting)';
+  document.querySelectorAll('.adjwho').forEach(e => e.textContent = t);
+}
 function pickItem(i) {
   selected = i;
+  if (items[i].adj) adjTo(items[i].adj);
+  showWho();
   $('hl').value = items[i].headline;
   document.querySelectorAll('.card').forEach((c, j) => c.classList.toggle('on', j === i));
   preview();
@@ -460,6 +472,7 @@ $('load').onclick = async () => {
 
     items = news.map(i => ({
       ...i,
+      adj: curAdj(),                                 // is poster ki apni setting
       headline: addStars(i.title),
       text: i.desc ? i.title + '\n\n' + i.desc : i.title,
       im: bestImg(i),                                // promise: image peeche load hoti rehti hai
@@ -474,7 +487,7 @@ $('load').onclick = async () => {
 const tmpCanvas = document.createElement('canvas');
 async function posterBlob(i) {
   const it = items[i];
-  await draw(tmpCanvas, it.headline, it.im ? await it.im : null, +$('xq').value);
+  await draw(tmpCanvas, it.headline, it.im ? await it.im : null, +$('xq').value, it.adj);
   return new Promise(r => tmpCanvas.toBlob(r, 'image/png'));
 }
 function saveBlob(blob, name) {
@@ -583,7 +596,22 @@ $('fontf').onchange = async e => {
   preview();
 };
 $('sz').onchange = () => { $('cs').hidden = $('sz').value !== 'c'; };
+// photo/text ke sliders: sirf abhi select hue poster ki setting badalti hai
+ADJ_KEYS.forEach(k => $(k).addEventListener('input', () => { if (selected >= 0) items[selected].adj = curAdj(); }));
+document.querySelectorAll('.adj-all').forEach(b => b.onclick = () => {
+  if (!items.length) { $('st').textContent = 'Pehle khabrein load karein'; return; }
+  const c = curAdj();
+  items.forEach(it => it.adj = { ...c });
+  $('st').textContent = 'Yehi setting sab ' + items.length + ' posters par lag gayi';
+  preview();
+});
+document.querySelectorAll('.adj-reset').forEach(b => b.onclick = () => {
+  adjTo(ADJ_DEFAULT);
+  if (selected >= 0) items[selected].adj = { ...ADJ_DEFAULT };
+  preview();
+});
 document.querySelectorAll('#ctl input,#ctl select').forEach(e => e.addEventListener('input', preview));
+showWho();
 
 /* ---------- 7. Channel list aur feed check ---------- */
 let region = 'All';

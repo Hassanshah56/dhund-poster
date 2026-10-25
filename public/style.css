@@ -9,7 +9,7 @@ main{display:grid;grid-template-columns:minmax(340px,460px) 1fr;gap:18px;padding
 #ctl{order:1;min-width:0}
 #pv{order:2;position:sticky;top:12px;min-width:0}
 #stage{display:grid;place-items:center;background:#0a0909;border:1px solid var(--b);border-radius:16px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-canvas{max-width:100%;max-height:calc(100dvh - 150px);width:auto;height:auto;border-radius:8px;background:#222}
+canvas{max-width:100%;max-height:calc(100dvh - 190px);width:auto;height:auto;border-radius:8px;background:#222}
 #bar{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 #bar span{flex:1;text-align:center;color:var(--m);font-size:12px;min-width:80px}
 #bar button{margin:0}
@@ -57,3 +57,27 @@ button.sm{padding:6px 12px;font-size:12px;margin:0}
 .row>*{flex:1 1 90px}}
 .ch.ok{border-color:#2ecc71;color:#2ecc71}
 .ch.bad{opacity:.45;border-style:dashed;text-decoration:line-through}
+
+/* box ka masla: textarea sirf neeche ki taraf bara ho, layout kabhi na toote */
+textarea{resize:vertical;max-width:100%;min-height:44px}
+#ctl{overflow-x:clip}
+
+/* translate toolbar */
+.tr{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0 6px;padding:10px 12px 12px;border:1px solid var(--b);border-radius:14px;background:linear-gradient(180deg,#251d1d,#181414)}
+.tr>span{flex-basis:100%;font-size:12px;font-weight:700;letter-spacing:.3px;color:var(--y);display:flex;align-items:center;gap:6px}
+.tr>span:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--y);box-shadow:0 0 8px var(--y)}
+.tr em{font-style:normal;font-size:12px;color:var(--y);flex-basis:100%;white-space:pre-wrap}
+.tr button,.acts button[data-m]{margin:0;border-radius:999px;font-weight:700;letter-spacing:.2px;border:1px solid transparent;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .15s,filter .15s,box-shadow .15s}
+.tr button{flex:1 1 auto;padding:8px 16px;font-size:13px}
+.acts button[data-m]{padding:6px 14px;font-size:12px}
+.tr button[data-m=ru],.acts button[data-m=ru]{background:linear-gradient(135deg,#ff5a5f,#e11d2e)}
+.tr button[data-m=ur],.acts button[data-m=ur]{background:linear-gradient(135deg,#22c55e,#15803d);font-family:"Noto Naskh Arabic","Noto Nastaliq Urdu",system-ui,sans-serif;font-size:15px;line-height:1.2}
+.tr button[data-m=en],.acts button[data-m=en]{background:linear-gradient(135deg,#3b82f6,#1d4ed8)}
+.tr button[data-m=undo],.acts button[data-m=undo]{flex:0 0 auto;background:transparent;border:1px dashed #6a5855;color:var(--m);box-shadow:none}
+.tr button[data-m]:hover,.acts button[data-m]:hover{filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.5);color:#fff}
+.tr button[data-m=undo]:hover,.acts button[data-m=undo]:hover{border-color:var(--y);color:var(--y);filter:none;box-shadow:none}
+.tr button[data-m]:active,.acts button[data-m]:active{transform:scale(.96)}
+.tbusy .tr button,.tbusy .acts button[data-m]{opacity:.5;pointer-events:none;animation:tpulse 1s ease-in-out infinite}
+@keyframes tpulse{50%{opacity:.8}}
+.tr .adj-all,.tr .adj-reset{font-family:inherit;font-size:12.5px;line-height:1.4}
+.adjwho{color:var(--y)}

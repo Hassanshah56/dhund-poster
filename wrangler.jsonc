@@ -5,6 +5,9 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": true
+    "run_worker_first": ["/proxy", "/translate"]
+  },
+  "ai": {
+    "binding": "AI"
   }
 }
